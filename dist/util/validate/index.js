@@ -26,10 +26,12 @@ z_schema_1.default.registerFormat('id', (str) => {
     }
 });
 z_schema_1.default.registerFormat('address', (str) => {
-    if (str.length === 0) {
-        return true;
+    try {
+        return BigInt(str).toString(2).length <= type_1.LENGTH.ADDRESS_BINARY_SIZE;
     }
-    return /^\d{8,21}$/.test(str);
+    catch (e) {
+        return false;
+    }
 });
 z_schema_1.default.registerFormat('limit', (value) => {
     if (typeof value === 'string') {
