@@ -28,7 +28,7 @@ exports.CONFIG_TESTNET = {
         },
     },
     STAKE: {
-        VOTE_MILESTONE: 10,
+        VOTE_MILESTONE: 60,
         REWARDS: {
             MILESTONES: [
                 0.1,
@@ -38,7 +38,7 @@ exports.CONFIG_TESTNET = {
                 0.04,
                 0.02 // 2% For 31 months and above
             ],
-            DISTANCE: 30,
+            DISTANCE: 0.006944444,
         },
         REWARD_VOTE_COUNT: 2,
         UNSTAKE_VOTE_COUNT: 4,

@@ -12,7 +12,7 @@ describe('ARP Stack', () => {
     beforeEach(() => {
         accountRepository = new AccountRepository();
 
-        DDK.initialize(WORKSPACE.MAINNET, accountRepository);
+        DDK.initialize(WORKSPACE.TESTNET, accountRepository);
     });
 
     it('Empty sender', () => {
