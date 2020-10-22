@@ -13,7 +13,7 @@ class DDKRegistry {
     get rewardCalculator() {
         return this._rewardCalculator;
     }
-    initialize(workspace = config_1.WORKSPACE.MAINNET) {
+    initialize(workspace = config_1.WORKSPACE.TESTNET) {
         this._config = config_1.getConfig(workspace);
         this._rewardCalculator = reward_1.initRewardCalculator(this._config);
     }

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CONFIG_TESTNET = {
     AIRDROP: {
         ADDRESS: '7897332094363171058',
-        STAKE_REWARD_PERCENT: 0.1,
+        STAKE_REWARD_PERCENT: 0.08,
         REFERRAL_PERCENT_PER_LEVEL: [
             0.05, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01, 0.009, 0.008, 0.007, 0.006, 0.005, 0.005, 0.005, 0.005,
         ],
