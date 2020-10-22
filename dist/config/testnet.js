@@ -5,7 +5,7 @@ exports.CONFIG_TESTNET = {
     AIRDROP: {
         ADDRESS: '7897332094363171058',
         TOTAL_AMOUNT: 900000 * const_1.COIN_MULTIPLIER,
-        STAKE_REWARD_PERCENT: 0.08,
+        STAKE_REWARD_PERCENT: 0.1,
         REFERRAL_PERCENT_PER_LEVEL: [
             0.05, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01, 0.009, 0.008, 0.007, 0.006, 0.005, 0.005, 0.005, 0.005,
         ],
@@ -31,12 +31,12 @@ exports.CONFIG_TESTNET = {
         VOTE_MILESTONE: 10,
         REWARDS: {
             MILESTONES: [
-                0.1,
-                0.1,
-                0.1,
-                0.1,
-                0.1,
-                0.1 // 2% For 31 months and above
+                0.08,
+                0.08,
+                0.08,
+                0.08,
+                0.08,
+                0.08 // 2% For 31 months and above
             ],
             DISTANCE: 30,
         },
