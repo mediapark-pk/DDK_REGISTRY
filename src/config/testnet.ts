@@ -27,7 +27,7 @@ export const CONFIG_TESTNET = {
         },
     },
     STAKE: {
-        VOTE_MILESTONE: 10, // in seconds
+        VOTE_MILESTONE: 60, // in seconds
         REWARDS: {
             MILESTONES: [
                 0.1, // 10% For 0-6 months
