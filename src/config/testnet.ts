@@ -30,12 +30,12 @@ export const CONFIG_TESTNET = {
         VOTE_MILESTONE: 10, // in seconds
         REWARDS: {
             MILESTONES: [
-                0.08, // 10% For 0-6 months
-                0.08, // 10% For 7-12 months
+                0.1, // 10% For 0-6 months
+                0.1, // 10% For 7-12 months
                 0.08, // 8% For 13-18 months
-                0.08, // 6% For 19-24 months
-                0.08, // 4% For 25-30 months
-                0.08  // 2% For 31 months and above
+                0.06, // 6% For 19-24 months
+                0.04, // 4% For 25-30 months
+                0.02  // 2% For 31 months and above
             ],
             DISTANCE: 30, // Distance between each milestone is 6 months
         },
