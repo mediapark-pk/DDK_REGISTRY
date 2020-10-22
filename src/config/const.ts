@@ -1,0 +1,1 @@
+export const COIN_MULTIPLIER = 100000000;

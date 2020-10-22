@@ -6,4 +6,5 @@ export declare type VoteData = {
     type: VoteType;
     votes: Array<string>;
 };
-export declare const createAssetVote: (data: VoteData, sender: Account, lastBlockHeight: number, availableAirdropBalance: number) => AssetVote;
+export declare const createOldAssetVote: (data: VoteData, sender: Account, lastBlockHeight: number, availableAirdropBalance: number) => AssetVote;
+export declare const createAssetVote: (data: VoteData, sender: Account, lastBlockHeight: number, availableAirdropBalance: number, availableARPAirdropBalance?: number) => AssetVote;

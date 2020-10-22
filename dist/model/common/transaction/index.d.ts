@@ -2,7 +2,7 @@ import { Address, PublicKey, Timestamp, TransactionId, BlockId } from '../type';
 import { TransactionType } from './type';
 import { TransactionStatus } from './status';
 import { Asset } from './asset';
-export declare type TransactionSchema<T extends Asset> = {
+export declare type TransactionSchema<T> = {
     id: TransactionId;
     blockId: BlockId;
     type: TransactionType;

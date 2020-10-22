@@ -48,12 +48,13 @@ export class AssetStake extends Asset {
         offset += BUFFER.LENGTH.UINT32;
         buff.writeInt8(this.startVoteCount, offset);
 
-        const referralBuffer = Buffer.alloc(REWARD_BUFFER_SIZE);
+        const airdropBufferSize = REWARD_BUFFER_SIZE * (this.airdropReward.sponsors.size || 1);
+        const referralBuffer = Buffer.alloc(airdropBufferSize);
         offset = 0;
         if (this.airdropReward && this.airdropReward.sponsors.size > 0) {
             for (const [sponsorAddress, reward] of this.airdropReward.sponsors) {
                 offset = BUFFER.writeUInt64LE(referralBuffer, sponsorAddress, offset);
-                BUFFER.writeUInt64LE(referralBuffer, reward, offset);
+                offset = BUFFER.writeUInt64LE(referralBuffer, reward, offset);
             }
         }
 
@@ -61,12 +62,7 @@ export class AssetStake extends Asset {
     }
 
     getBufferSize(): number {
-        let size = BUFFER_SIZE;
-        if (this.airdropReward && this.airdropReward.sponsors.size > 0) {
-            size += REWARD_BUFFER_SIZE;
-        }
-
-        return size;
+        return BUFFER_SIZE + REWARD_BUFFER_SIZE * (this.airdropReward.sponsors.size || 1);
     }
 
     writeBytes(buffer: Buffer, offset: number): number {

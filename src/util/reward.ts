@@ -1,8 +1,9 @@
 import { Account } from '../model/common/account';
 import { TransactionType } from '../model/common/transaction/type';
 import { Address, AirdropReward, Timestamp, StakeReward, VoteType } from '../model/common/type';
-import { StakeSchema } from '../model/common/transaction/stake';
+import { StakeSchema, Stake } from '../model/common/transaction/stake';
 import { ConfigSchema } from '../config';
+import { IFeatureController, FeatureController } from './feature';
 
 export interface IStakeRewardPercentCalculator {
     calculatePercent(height: number): number;
@@ -35,7 +36,7 @@ export class StakeRewardPercentCalculator implements IStakeRewardPercentCalculat
 export interface IRewardCalculator {
     calculateTotalRewardAndUnstake(
         createdAt: Timestamp,
-        sender: Account,
+        stakes: Array<Stake>,
         voteType: VoteType,
         lastBlockHeight: number,
     ): StakeReward;
@@ -53,6 +54,7 @@ export class RewardCalculator implements IRewardCalculator {
     private readonly unstakeVoteCount: number;
     private readonly stakeRewardPercent: number;
     private readonly referralPercentPerLevel: Array<number>;
+    private readonly arpFeatureController: IFeatureController;
 
     constructor(
         rewardVoteCount: number,
@@ -60,17 +62,19 @@ export class RewardCalculator implements IRewardCalculator {
         stakeRewardPercent: number,
         referralPercentPerLevel: Array<number>,
         percentCalculator: IStakeRewardPercentCalculator,
+        arpFeatureController: IFeatureController,
     ) {
         this.rewardVoteCount = rewardVoteCount;
         this.unstakeVoteCount = unstakeVoteCount;
         this.percentCalculator = percentCalculator;
         this.stakeRewardPercent = stakeRewardPercent;
         this.referralPercentPerLevel = referralPercentPerLevel;
+        this.arpFeatureController = arpFeatureController;
     }
 
     calculateTotalRewardAndUnstake(
         createdAt: Timestamp,
-        sender: Account,
+        stakes: Array<Stake>,
         voteType: VoteType,
         lastBlockHeight: number,
     ): StakeReward {
@@ -81,7 +85,7 @@ export class RewardCalculator implements IRewardCalculator {
             return { reward, unstake };
         }
 
-        sender.stakes
+        stakes
             .filter(stake => stake.isActive && createdAt >= stake.nextVoteMilestone)
             .forEach((stake: StakeSchema) => {
                 const nextVoteCount = stake.voteCount + 1;
@@ -93,6 +97,10 @@ export class RewardCalculator implements IRewardCalculator {
                     unstake += stake.amount;
                 }
             });
+
+        if (this.arpFeatureController.isEnabled(lastBlockHeight)) {
+            reward = Math.ceil(reward);
+        }
 
         return { reward, unstake };
     }
@@ -111,7 +119,7 @@ export class RewardCalculator implements IRewardCalculator {
             return airdropReward;
         }
 
-        const referrals = [];
+        const referrals: Array<BigInt> = [];
         if (transactionType === TransactionType.STAKE) {
             referrals.push(sender.referrals[0]);
         } else {
@@ -119,11 +127,11 @@ export class RewardCalculator implements IRewardCalculator {
         }
 
         let airdropRewardAmount: number = 0;
-        referrals.forEach((referral: Account, i: number) => {
+        referrals.forEach((referral: BigInt, i: number) => {
             const reward = transactionType === TransactionType.STAKE
                 ? Math.ceil(amount * this.stakeRewardPercent)
                 : Math.ceil(this.referralPercentPerLevel[i] * amount);
-            airdropReward.sponsors.set(referral.address, reward);
+            airdropReward.sponsors.set(referral, reward);
             airdropRewardAmount += reward;
         });
 
@@ -145,5 +153,6 @@ export const initRewardCalculator = (config: ConfigSchema): IRewardCalculator =>
             config.STAKE.REWARDS.MILESTONES,
             config.STAKE.REWARDS.DISTANCE,
         ),
+        new FeatureController(config.ARP.ENABLED_BLOCK_HEIGHT),
     );
 };

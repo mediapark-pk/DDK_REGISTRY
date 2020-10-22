@@ -5,6 +5,9 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("./config");
 const reward_1 = require("./util/reward");
+const stake_1 = require("./util/arp/stake");
+const vote_1 = require("./util/arp/vote");
+const feature_1 = require("./model/common/feature");
 __export(require("./config"));
 class DDKRegistry {
     get config() {
@@ -13,9 +16,29 @@ class DDKRegistry {
     get rewardCalculator() {
         return this._rewardCalculator;
     }
-    initialize(workspace = config_1.WORKSPACE.TESTNET) {
+    get stakeARPCalculator() {
+        return this._stakeARPCalculator;
+    }
+    get voteARPCalculator() {
+        return this._voteARPCalculator;
+    }
+    get accountRepository() {
+        return this._accountRepo;
+    }
+    isFeatureEnabled(feature, lastBlockHeight) {
+        switch (feature) {
+            case feature_1.Feature.ARP:
+                return lastBlockHeight >= this.config.ARP.ENABLED_BLOCK_HEIGHT;
+            default:
+                return false;
+        }
+    }
+    initialize(workspace = config_1.WORKSPACE.MAINNET, accountRepo) {
         this._config = config_1.getConfig(workspace);
+        this._accountRepo = accountRepo;
         this._rewardCalculator = reward_1.initRewardCalculator(this._config);
+        this._stakeARPCalculator = stake_1.initStakeARPCalculator(this.config);
+        this._voteARPCalculator = vote_1.initVoteARPCalculator(this.config);
     }
 }
 exports.DDKRegistry = DDKRegistry;

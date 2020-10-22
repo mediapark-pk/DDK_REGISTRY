@@ -3,7 +3,6 @@ import { VoteType, AirdropReward } from '../../type';
 import { clone } from '../../../../util/clone';
 import BUFFER from '../../../../util/buffer';
 import { Account } from '../../account';
-import { StakeSchema } from '../stake';
 import { CONFIG_DEFAULT } from '../../../../config';
 import { calculateUtf8BytesLength } from '../../../../util/string';
 
@@ -13,6 +12,11 @@ export type AssetVoteSchema = {
     reward: number;
     unstake: number;
     airdropReward: AirdropReward;
+    arp?: {
+        reward: number;
+        unstake: number;
+        airdropReward: AirdropReward;
+    }
 };
 
 const BUFFER_SIZE =
@@ -23,12 +27,17 @@ const REWARD_BUFFER_SIZE =
     BUFFER.LENGTH.INT64 +  // airdropReward.address
     BUFFER.LENGTH.INT64;   // airdropReward.amount
 
-export class AssetVote extends Asset {
+export class AssetVote extends Asset implements AssetVoteSchema {
     votes: Array<string>;
     type: VoteType;
     reward: number;
     unstake: number;
     airdropReward: AirdropReward;
+    arp?: {
+        reward: number;
+        unstake: number;
+        airdropReward: AirdropReward;
+    };
 
     constructor(data: AssetVoteSchema) {
         super();
@@ -38,10 +47,33 @@ export class AssetVote extends Asset {
         this.reward = data.reward;
         this.unstake = data.unstake;
         this.airdropReward = data.airdropReward;
+        this.arp = data.arp;
     }
 
     getCopy(): AssetVote {
         return new AssetVote(clone(this));
+    }
+
+    private writeARPBytes(buff: Buffer, offset: number): number {
+        offset = BUFFER.writeUInt64LE(buff, this.arp.reward, offset);
+        offset = BUFFER.writeUInt64LE(buff, this.arp.unstake, offset);
+
+        for (const [sponsorAddress, reward] of this.arp.airdropReward.sponsors) {
+            offset = BUFFER.writeUInt64LE(buff, sponsorAddress, offset);
+            offset = BUFFER.writeUInt64LE(buff, reward, offset);
+        }
+
+        return offset;
+    }
+
+    private getARPBytes(): Buffer {
+        if (this.arp) {
+            const buff = Buffer.alloc(BUFFER_SIZE + REWARD_BUFFER_SIZE * this.arp.airdropReward.sponsors.size);
+            this.writeARPBytes(buff, 0);
+            return buff;
+        }
+
+        return Buffer.alloc(0);
     }
 
     getBytes(): Buffer {
@@ -62,16 +94,17 @@ export class AssetVote extends Asset {
         }
 
         const voteBuffer = Buffer.from(this.votes.join(''), 'utf8');
-        return Buffer.concat([buff, sponsorsBuffer, voteBuffer]);
+        return Buffer.concat([buff, sponsorsBuffer, voteBuffer, this.getARPBytes()]);
     }
 
     getBufferSize(): number {
-        let size = BUFFER_SIZE;
-        if (this.airdropReward && this.airdropReward.sponsors.size > 0) {
-            size += REWARD_BUFFER_SIZE * CONFIG_DEFAULT.MAX_REFERRAL_COUNT;
-        }
+        let size = BUFFER_SIZE + REWARD_BUFFER_SIZE * CONFIG_DEFAULT.MAX_REFERRAL_COUNT;
 
         size += calculateUtf8BytesLength(this.votes.join(''));
+
+        if (this.arp) {
+            size += BUFFER_SIZE + REWARD_BUFFER_SIZE * this.arp.airdropReward.sponsors.size;
+        }
 
         return size;
     }
@@ -95,13 +128,14 @@ export class AssetVote extends Asset {
 
         offset += buffer.write(this.votes.join(''), offset, 'utf8');
 
+        if (this.arp) {
+            offset = this.writeARPBytes(buffer, offset);
+        }
+
         return offset;
     }
 
     calculateFee(sender: Account): number {
-        return Math.ceil(sender.stakes.reduce(
-            (sum: number, stake: StakeSchema) => sum += (stake.isActive ? stake.amount : 0),
-            0,
-        ) * CONFIG_DEFAULT.FEES.VOTE);
+        return Math.ceil(sender.getTotalStakeAmount() * CONFIG_DEFAULT.FEES.VOTE);
     }
 }

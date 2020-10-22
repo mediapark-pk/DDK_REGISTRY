@@ -1,7 +1,7 @@
 import { Account } from './account';
-import { TransactionType } from './transaction/type';
 import { Asset } from './transaction/asset';
 import { StakeSchema } from './transaction/stake';
+import { TransactionType } from './transaction/type';
 
 export type TransactionId = string;
 export type BlockId = string;

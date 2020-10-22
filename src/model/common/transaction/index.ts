@@ -8,7 +8,7 @@ import { getAddressByPublicKey } from '../../../util/account';
 import { clone } from '../../../util/clone';
 import { TRANSACTION_SALT_LENGTH } from '../../../util/transaction';
 
-export type TransactionSchema<T extends Asset> = {
+export type TransactionSchema<T> = {
     id: TransactionId;
     blockId: BlockId;
     type: TransactionType;

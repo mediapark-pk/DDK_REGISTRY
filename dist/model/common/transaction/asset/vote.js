@@ -20,9 +20,27 @@ class AssetVote extends _1.Asset {
         this.reward = data.reward;
         this.unstake = data.unstake;
         this.airdropReward = data.airdropReward;
+        this.arp = data.arp;
     }
     getCopy() {
         return new AssetVote(clone_1.clone(this));
+    }
+    writeARPBytes(buff, offset) {
+        offset = buffer_1.default.writeUInt64LE(buff, this.arp.reward, offset);
+        offset = buffer_1.default.writeUInt64LE(buff, this.arp.unstake, offset);
+        for (const [sponsorAddress, reward] of this.arp.airdropReward.sponsors) {
+            offset = buffer_1.default.writeUInt64LE(buff, sponsorAddress, offset);
+            offset = buffer_1.default.writeUInt64LE(buff, reward, offset);
+        }
+        return offset;
+    }
+    getARPBytes() {
+        if (this.arp) {
+            const buff = Buffer.alloc(BUFFER_SIZE + REWARD_BUFFER_SIZE * this.arp.airdropReward.sponsors.size);
+            this.writeARPBytes(buff, 0);
+            return buff;
+        }
+        return Buffer.alloc(0);
     }
     getBytes() {
         const buff = Buffer.alloc(BUFFER_SIZE);
@@ -36,14 +54,14 @@ class AssetVote extends _1.Asset {
             offset = buffer_1.default.writeUInt64LE(sponsorsBuffer, reward, offset);
         }
         const voteBuffer = Buffer.from(this.votes.join(''), 'utf8');
-        return Buffer.concat([buff, sponsorsBuffer, voteBuffer]);
+        return Buffer.concat([buff, sponsorsBuffer, voteBuffer, this.getARPBytes()]);
     }
     getBufferSize() {
-        let size = BUFFER_SIZE;
-        if (this.airdropReward && this.airdropReward.sponsors.size > 0) {
-            size += REWARD_BUFFER_SIZE * config_1.CONFIG_DEFAULT.MAX_REFERRAL_COUNT;
-        }
+        let size = BUFFER_SIZE + REWARD_BUFFER_SIZE * config_1.CONFIG_DEFAULT.MAX_REFERRAL_COUNT;
         size += string_1.calculateUtf8BytesLength(this.votes.join(''));
+        if (this.arp) {
+            size += BUFFER_SIZE + REWARD_BUFFER_SIZE * this.arp.airdropReward.sponsors.size;
+        }
         return size;
     }
     writeBytes(buffer, offset) {
@@ -61,10 +79,13 @@ class AssetVote extends _1.Asset {
             }
         }
         offset += buffer.write(this.votes.join(''), offset, 'utf8');
+        if (this.arp) {
+            offset = this.writeARPBytes(buffer, offset);
+        }
         return offset;
     }
     calculateFee(sender) {
-        return Math.ceil(sender.stakes.reduce((sum, stake) => sum += (stake.isActive ? stake.amount : 0), 0) * config_1.CONFIG_DEFAULT.FEES.VOTE);
+        return Math.ceil(sender.getTotalStakeAmount() * config_1.CONFIG_DEFAULT.FEES.VOTE);
     }
 }
 exports.AssetVote = AssetVote;

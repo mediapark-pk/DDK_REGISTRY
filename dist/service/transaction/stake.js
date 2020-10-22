@@ -6,12 +6,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const type_1 = require("../../model/common/transaction/type");
 const stake_1 = require("../../model/common/transaction/asset/stake");
 const __1 = __importDefault(require("../.."));
-exports.createAssetStake = (data, sender, availableAirdropBalance) => {
+const feature_1 = require("../../model/common/feature");
+exports.createOldAssetStake = (data, sender, availableAirdropBalance) => {
     const airdropReward = __1.default.rewardCalculator.calculateAirdropReward(sender, data.amount, type_1.TransactionType.STAKE, availableAirdropBalance);
     return new stake_1.AssetStake({
         airdropReward,
         amount: data.amount,
-        startTime: data.createdAt,
+        startTime: data.startTime,
         startVoteCount: data.startVoteCount || 0,
+    });
+};
+exports.createAssetStake = (data, sender, lastBlockHeight, availableAirdropBalance, availableARPBalance) => {
+    if (!__1.default.isFeatureEnabled(feature_1.Feature.ARP, lastBlockHeight)) {
+        return exports.createOldAssetStake(data, sender, availableAirdropBalance);
+    }
+    const airdropReward = __1.default.stakeARPCalculator.calculate(sender, data.amount, availableARPBalance);
+    return new stake_1.AssetStake({
+        airdropReward,
+        amount: data.amount,
+        startTime: data.startTime,
     });
 };
