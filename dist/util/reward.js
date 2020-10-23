@@ -9,15 +9,22 @@ class StakeRewardPercentCalculator {
         this.distance = distance;
     }
     calculateMilestone(height) {
+        console.log('milestones and distance', this.milestones, this.distance);
         const location = Math.trunc((height) / this.distance);
+        console.log('location', location);
         const lastMile = this.milestones[this.milestones.length - 1];
+        console.log('lastMile', lastMile);
         if (location > (this.milestones.length - 1)) {
-            return this.milestones.lastIndexOf(lastMile);
+            const milestones = this.milestones.lastIndexOf(lastMile);
+            console.log('after calculation location Milestones', milestones);
+            return milestones;
         }
         return location;
     }
     calculatePercent(height) {
-        return this.milestones[this.calculateMilestone(height)];
+        const milestones = this.milestones[this.calculateMilestone(height)];
+        console.log('calcualte percent', milestones);
+        return milestones;
     }
 }
 exports.StakeRewardPercentCalculator = StakeRewardPercentCalculator;
@@ -42,6 +49,7 @@ class RewardCalculator {
             const nextVoteCount = stake.voteCount + 1;
             if (stake.voteCount > 0 && nextVoteCount % this.rewardVoteCount === 0) {
                 const stakeRewardPercent = this.percentCalculator.calculatePercent(lastBlockHeight);
+                console.log('stakeRewardPercent', stakeRewardPercent);
                 reward += stake.amount * stakeRewardPercent;
             }
             if (nextVoteCount === this.unstakeVoteCount) {
@@ -51,6 +59,7 @@ class RewardCalculator {
         if (this.arpFeatureController.isEnabled(lastBlockHeight)) {
             reward = Math.ceil(reward);
         }
+        console.log(reward, unstake);
         return { reward, unstake };
     }
     calculateAirdropReward(sender, amount, transactionType, availableAirdropBalance) {
