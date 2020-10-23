@@ -38,7 +38,7 @@ exports.CONFIG_TESTNET = {
                 0.04,
                 0.02 // 2% For 31 months and above
             ],
-            DISTANCE: 0.006944444,
+            DISTANCE: 30,
         },
         REWARD_VOTE_COUNT: 2,
         UNSTAKE_VOTE_COUNT: 4,

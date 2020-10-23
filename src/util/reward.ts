@@ -19,24 +19,24 @@ export class StakeRewardPercentCalculator implements IStakeRewardPercentCalculat
     }
 
     private calculateMilestone(height: number): number {
-        console.log('milestones and distance', this.milestones, this.distance)
+        console.log('milestones and distance', this.milestones, this.distance);
         const location = Math.trunc((height) / this.distance);
-        console.log('location',location)
+        console.log('location', location);
         const lastMile = this.milestones[this.milestones.length - 1];
-        console.log('lastMile', lastMile)
+        console.log('lastMile', lastMile);
 
         if (location > (this.milestones.length - 1)) {
             const milestones = this.milestones.lastIndexOf(lastMile);
-            console.log('after calculation location Milestones', milestones)
-            return milestones
+            console.log('after calculation location Milestones', milestones);
+            return milestones;
         }
         return location;
     }
 
     calculatePercent(height: number): number {
-        const milestones=this.milestones[this.calculateMilestone(height)];
-        console.log('calcualte percent', milestones)
-        return milestones
+        const milestones = this.milestones[this.calculateMilestone(height)];
+        console.log('calcualte percent', milestones);
+        return milestones;
     }
 }
 
@@ -98,7 +98,7 @@ export class RewardCalculator implements IRewardCalculator {
                 const nextVoteCount = stake.voteCount + 1;
                 if (stake.voteCount > 0 && nextVoteCount % this.rewardVoteCount === 0) {
                     const stakeRewardPercent = this.percentCalculator.calculatePercent(lastBlockHeight);
-                    console.log('stakeRewardPercent', stakeRewardPercent)
+                    console.log('stakeRewardPercent', stakeRewardPercent);
                     reward += stake.amount * stakeRewardPercent;
                 }
                 if (nextVoteCount === this.unstakeVoteCount) {
@@ -109,7 +109,7 @@ export class RewardCalculator implements IRewardCalculator {
         if (this.arpFeatureController.isEnabled(lastBlockHeight)) {
             reward = Math.ceil(reward);
         }
-        console.log(reward, unstake)
+        console.log(reward, unstake);
         return { reward, unstake };
     }
 

@@ -37,7 +37,7 @@ export const CONFIG_TESTNET = {
                 0.04, // 4% For 25-30 months
                 0.02  // 2% For 31 months and above
             ],
-            DISTANCE: 0.006944444, // Distance between each milestone is 6 months
+            DISTANCE: 30, // Distance between each milestone is 6 months
         },
         REWARD_VOTE_COUNT: 2,
         UNSTAKE_VOTE_COUNT: 4,
