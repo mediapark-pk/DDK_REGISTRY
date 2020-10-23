@@ -9,7 +9,7 @@ class StakeRewardPercentCalculator {
         this.distance = distance;
     }
     calculateMilestone(height) {
-        console.log('milestones and distance', this.milestones, this.distance);
+        console.log('milestones and distance and height', this.milestones, this.distance, height);
         const location = Math.trunc((height) / this.distance);
         console.log('location', location);
         const lastMile = this.milestones[this.milestones.length - 1];
@@ -22,6 +22,7 @@ class StakeRewardPercentCalculator {
         return location;
     }
     calculatePercent(height) {
+        console.log('height in calculatePercent', height);
         const milestones = this.milestones[this.calculateMilestone(height)];
         console.log('calcualte percent', milestones);
         return milestones;
@@ -47,6 +48,7 @@ class RewardCalculator {
             .filter(stake => stake.isActive && createdAt >= stake.nextVoteMilestone)
             .forEach((stake) => {
             const nextVoteCount = stake.voteCount + 1;
+            console.log('lastBlockHeight', lastBlockHeight);
             if (stake.voteCount > 0 && nextVoteCount % this.rewardVoteCount === 0) {
                 const stakeRewardPercent = this.percentCalculator.calculatePercent(lastBlockHeight);
                 console.log('stakeRewardPercent', stakeRewardPercent);
