@@ -9,22 +9,26 @@ class StakeRewardPercentCalculator {
         this.distance = distance;
     }
     calculateMilestone(height) {
-        // if (height >= 0 && height <= 100) {
-        //     console.log('10% height');
-        //     return 0.1;
-        // } else if (height >= 101 && height <= 200) {
-        //     console.log('8% height');
-        //     return 0.08;
-        // } else if (height >= 201 && height <= 300) {
-        //     console.log('6% height');
-        //     return 0.06;
-        // } else if (height >= 301 && height <= 400) {
-        //     console.log('4% height');
-        //     return 0.04;
-        // } else if (height > 401) {
-        //     console.log('2% height');
-        //     return 0.02;
-        // }
+        if (height >= 0 && height <= 30) {
+            console.log('10% height');
+            return 0.1;
+        }
+        else if (height >= 31 && height <= 50) {
+            console.log('8% height');
+            return 0.08;
+        }
+        else if (height >= 51 && height <= 60) {
+            console.log('6% height');
+            return 0.06;
+        }
+        else if (height >= 61 && height <= 80) {
+            console.log('4% height');
+            return 0.04;
+        }
+        else if (height > 81) {
+            console.log('2% height');
+            return 0.02;
+        }
         console.log('milestones and distance and height', this.milestones, this.distance, height);
         const location = Math.trunc((height) / this.distance);
         console.log('location', location);
@@ -39,7 +43,7 @@ class StakeRewardPercentCalculator {
     }
     calculatePercent(height) {
         console.log('height in calculatePercent', height);
-        const milestones = this.milestones[this.calculateMilestone(height)];
+        const milestones = this.calculateMilestone(height);
         console.log('calcualte percent', milestones);
         return milestones;
     }
