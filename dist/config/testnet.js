@@ -33,10 +33,10 @@ exports.CONFIG_TESTNET = {
             MILESTONES: [
                 0.1,
                 0.1,
-                0.08,
-                0.06,
-                0.04,
-                0.02 // 2% For 31 months and above
+                0.1,
+                0.1,
+                0.1,
+                0.1 // 2% For 31 months and above
             ],
             DISTANCE: 30,
         },
