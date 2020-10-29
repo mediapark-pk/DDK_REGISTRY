@@ -9,24 +9,19 @@ class StakeRewardPercentCalculator {
         this.distance = distance;
     }
     calculateMilestone(height) {
-        if (height >= 0 && height <= 30) {
-            console.log('10% height');
+        if (height <= 3153600) {
             return 0.1;
         }
-        else if (height >= 31 && height <= 50) {
-            console.log('8% height');
+        else if (height > 3153600 && height <= 6307119) {
             return 0.08;
         }
-        else if (height >= 51 && height <= 60) {
-            console.log('6% height');
+        else if (height > 6307119 && height < 7883999) {
             return 0.06;
         }
-        else if (height >= 61 && height <= 80) {
-            console.log('4% height');
+        else if (height > 7883999 && height < 9460799) {
             return 0.04;
         }
-        else if (height > 81) {
-            console.log('2% height');
+        else {
             return 0.02;
         }
         console.log('milestones and distance and height', this.milestones, this.distance, height);

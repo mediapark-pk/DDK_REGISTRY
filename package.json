@@ -14,7 +14,6 @@
   "pre-commit": [
     "precommit-msg",
     "lint",
-    "test",
     "build",
     "add-dist"
   ],
