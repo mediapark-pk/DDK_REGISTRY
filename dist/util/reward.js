@@ -15,7 +15,7 @@ class StakeRewardPercentCalculator {
         else if (height > 3153600 && height <= 6307119) {
             return 0.08;
         }
-        else if (height > 6307119 && height < 7883999) {
+        else if (height > 6307119 && height <= 7883999) {
             return 0.06;
         }
         else if (height > 7883999 && height < 9460799) {
