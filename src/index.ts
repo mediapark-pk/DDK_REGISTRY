@@ -44,7 +44,7 @@ export class DDKRegistry {
         }
     }
 
-    initialize(workspace: WORKSPACE = WORKSPACE.TESTNET, accountRepo: IAccountRepository) {
+    initialize(workspace: WORKSPACE = WORKSPACE.MAINNET, accountRepo: IAccountRepository) {
         this._config = getConfig(workspace);
         this._accountRepo = accountRepo;
         this._rewardCalculator = initRewardCalculator(this._config);

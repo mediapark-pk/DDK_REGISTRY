@@ -33,7 +33,7 @@ class DDKRegistry {
                 return false;
         }
     }
-    initialize(workspace = config_1.WORKSPACE.TESTNET, accountRepo) {
+    initialize(workspace = config_1.WORKSPACE.MAINNET, accountRepo) {
         this._config = config_1.getConfig(workspace);
         this._accountRepo = accountRepo;
         this._rewardCalculator = reward_1.initRewardCalculator(this._config);
