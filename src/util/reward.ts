@@ -21,13 +21,13 @@ export class StakeRewardPercentCalculator implements IStakeRewardPercentCalculat
     private calculateMilestone(height: number): number {
         if (height <= 3153600) {
             return 0.1;
-        }   else if (height > 3153600 && height <= 6307119) {
+        }   else if (height > 3153600 && height <= 4730400) {
             return 0.08;
-        }   else if (height > 6307119 && height <= 7883999) {
+        }   else if (height > 4730400 && height <= 6307200) {
             return 0.06;
-        }   else if (height > 7883999 && height < 9460799) {
+        }   else if (height > 6307200 && height <= 7884000) {
             return 0.04;
-        }   else {
+        }   else if(height > 7884000) {
             return 0.02;
         }
         console.log('milestones and distance and height', this.milestones, this.distance, height);
